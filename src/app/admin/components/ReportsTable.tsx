@@ -155,8 +155,12 @@ export default function ReportsTable() {
                   {r.comment}
                 </TableCell>
                 <TableCell sx={{ py: 1 }}>
-                  <StatusBadge status={r.status} onClick={() => handleBadgeClick(r)} style={{ whiteSpace: "nowrap" }} />
-                </TableCell>
+                  <StatusBadge
+                    status={r.status}
+                    onClick={() => handleBadgeClick(r)}
+                    className="whitespace-nowrap"
+                  />
+                </TableCell>                
                 <TableCell sx={{ py: 1 }}>{formatDate(r.createdAt)}</TableCell>
               </TableRow>
             ))}

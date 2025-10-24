@@ -5,7 +5,16 @@ import { Report } from "@/core/models/report";
 import { PRODUCTS } from "@/core/utils/constants";
 import { addReport } from "@/core/services/reportService";
 import { useToast } from "@/shared/hooks/useToast";
-import { Checkbox, FormControlLabel, TextField, Button } from "@mui/material";
+import {
+  Checkbox,
+  FormControlLabel,
+  TextField,
+  Button,
+  Box,
+  FormGroup,
+  FormHelperText,
+  Typography,
+} from "@mui/material";
 
 interface ReportFormProps {
   building: string;
@@ -16,6 +25,7 @@ interface ReportFormProps {
 export default function ReportForm({ building, floor, room }: ReportFormProps) {
   const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
   const [comment, setComment] = useState("");
+  const [error, setError] = useState("");
   const toast = useToast();
 
   const toggleProduct = (product: string) => {
@@ -25,6 +35,11 @@ export default function ReportForm({ building, floor, room }: ReportFormProps) {
   };
 
   const handleSubmit = async () => {
+    if (selectedProducts.length === 0) {
+      setError("Veuillez sélectionner au moins un produit");
+      return;
+    }
+
     try {
       const report: Report = {
         building,
@@ -40,26 +55,50 @@ export default function ReportForm({ building, floor, room }: ReportFormProps) {
       toast.success("Signalement envoyé avec succès");
       setSelectedProducts([]);
       setComment("");
+      setError("");
     } catch {
       toast.error("Erreur lors de l'envoi du signalement");
     }
   };
 
   return (
-    <div className="flex flex-col gap-3">
+    <Box
+      component="form"
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        gap: 2,
+        width: "100%",
+        maxWidth: 500,
+        mx: "auto",
+        px: 1,
+      }}
+      noValidate
+      autoComplete="off"
+    >
+      <Typography variant="h6" sx={{ mb: 1 }}>
+        Nouveau signalement
+      </Typography>
+
       <TextField label="Immeuble" value={building} disabled fullWidth />
       <TextField label="Étage" value={floor} disabled fullWidth />
       <TextField label="Pièce" value={room} disabled fullWidth />
 
-      <div className="flex flex-col">
+      <FormGroup>
         {PRODUCTS.map(p => (
           <FormControlLabel
             key={p}
-            control={<Checkbox checked={selectedProducts.includes(p)} onChange={() => toggleProduct(p)} />}
+            control={
+              <Checkbox
+                checked={selectedProducts.includes(p)}
+                onChange={() => toggleProduct(p)}
+              />
+            }
             label={p}
           />
         ))}
-      </div>
+        {error && <FormHelperText error>{error}</FormHelperText>}
+      </FormGroup>
 
       <TextField
         label="Commentaire (optionnel)"
@@ -70,9 +109,14 @@ export default function ReportForm({ building, floor, room }: ReportFormProps) {
         fullWidth
       />
 
-      <Button variant="contained" onClick={handleSubmit}>
+      <Button
+        variant="contained"
+        onClick={handleSubmit}
+        sx={{ mt: 1 }}
+        disabled={selectedProducts.length === 0}
+      >
         Envoyer
       </Button>
-    </div>
+    </Box>
   );
 }

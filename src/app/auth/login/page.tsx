@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { auth, googleProvider } from "@/core/services/firebase";
-import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
+import { auth } from "@/core/services/firebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { TextField, Button, Typography, Box } from "@mui/material";
 import { useToast } from "@/shared/hooks/useToast";
@@ -13,23 +13,13 @@ export default function LoginPage() {
   const toast = useToast();
   const router = useRouter();
 
-  const handleEmailLogin = async () => {
+  const handleLogin = async () => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       toast.success("Connexion réussie");
       router.push("/admin");
     } catch (error) {
       toast.error("Email ou mot de passe incorrect: " + error, );
-    }
-  };
-
-  const handleGoogleLogin = async () => {
-    try {
-      await signInWithPopup(auth, googleProvider);
-      toast.success("Connexion Google réussie");
-      router.push("/admin");
-    } catch (error) {
-      toast.error("Erreur de connexion Google: " + error);
     }
   };
 
@@ -53,12 +43,8 @@ export default function LoginPage() {
         fullWidth
       />
 
-      <Button variant="contained" onClick={handleEmailLogin}>
+      <Button variant="contained" onClick={handleLogin}>
         Se connecter
-      </Button>
-
-      <Button variant="outlined" onClick={handleGoogleLogin}>
-        Se connecter avec Google
       </Button>
     </Box>
   );

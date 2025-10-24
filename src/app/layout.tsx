@@ -15,13 +15,11 @@ export default function RootLayout({ children }: RootLayoutProps) {
   const [darkMode, setDarkMode] = useState(false);
 
   const theme = createTheme({
-    palette: {
-      mode: darkMode ? "dark" : "light",
-    },
+    palette: { mode: darkMode ? "dark" : "light" },
   });
 
   return (
-    <html lang="fr">
+    <html lang="fr" suppressHydrationWarning>
       <body>
         <ThemeProvider theme={theme}>
           <CssBaseline />

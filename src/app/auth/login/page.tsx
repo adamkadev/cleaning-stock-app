@@ -16,20 +16,20 @@ export default function LoginPage() {
   const handleEmailLogin = async () => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      toast.success("✅ Connexion réussie");
+      toast.success("Connexion réussie");
       router.push("/admin");
     } catch (error) {
-      toast.error("❌ Email ou mot de passe incorrect: " + error, );
+      toast.error("Email ou mot de passe incorrect: " + error, );
     }
   };
 
   const handleGoogleLogin = async () => {
     try {
       await signInWithPopup(auth, googleProvider);
-      toast.success("✅ Connexion Google réussie");
+      toast.success("Connexion Google réussie");
       router.push("/admin");
     } catch (error) {
-      toast.error("❌ Erreur de connexion Google: " + error);
+      toast.error("Erreur de connexion Google: " + error);
     }
   };
 

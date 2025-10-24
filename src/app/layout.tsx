@@ -1,7 +1,7 @@
 "use client";
 
 import "./globals.css";
-import { ReactNode, useState, useMemo } from "react";
+import { ReactNode, useState, useMemo, Suspense } from "react";
 import { Toaster } from "react-hot-toast";
 import Image from "next/image";
 import Link from "next/link";
@@ -102,7 +102,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
                 px: { xs: 2, md: 4 },
               }}
             >
-              {children}
+              <Suspense>
+                {children}
+              </Suspense>
             </Container>
           </main>
 

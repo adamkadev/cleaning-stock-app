@@ -37,11 +37,11 @@ export default function ReportForm({ building, floor, room }: ReportFormProps) {
       };
 
       await addReport(report);
-      toast.success("✅ Signalement envoyé avec succès");
+      toast.success("Signalement envoyé avec succès");
       setSelectedProducts([]);
       setComment("");
     } catch {
-      toast.error("❌ Erreur lors de l'envoi du signalement");
+      toast.error("Erreur lors de l'envoi du signalement");
     }
   };
 

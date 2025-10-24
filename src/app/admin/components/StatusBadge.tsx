@@ -2,7 +2,7 @@ import React from "react";
 
 interface StatusBadgeProps {
   status: "Initial" | "En cours" | "Traité";
-  onClick?: () => void; // ⚡ Ajouter ici
+  onClick?: () => void;
   className?: string;
 }
 
@@ -13,7 +13,7 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({ status, onClick, className })
 
   return (
     <span
-      onClick={onClick} // ⚡ utiliser ici
+      onClick={onClick}
       className={`${color} text-white px-2 py-1 rounded-full text-sm cursor-pointer ${className}`}
     >
       {status === "Initial" ? "Initial" : status === "En cours" ? "En cours" : "Traité"}

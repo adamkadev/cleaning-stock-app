@@ -12,7 +12,6 @@ import {
   IconButton,
   AppBar,
   Toolbar,
-  Box,
   Container,
   Tooltip,
 } from "@mui/material";
@@ -95,7 +94,14 @@ export default function RootLayout({ children }: RootLayoutProps) {
 
           {/* Contenu principal */}
           <main>
-            <Container maxWidth="md" sx={{ py: { xs: 2, md: 4 } }}>
+            <Container
+              maxWidth={false}
+              sx={{
+                maxWidth: { xs: "100%", md: 1200 },
+                py: { xs: 2, md: 4 },
+                px: { xs: 2, md: 4 },
+              }}
+            >
               {children}
             </Container>
           </main>

@@ -2,7 +2,7 @@
 
 import { useSearchParams } from "next/navigation";
 import ReportForm from "./components/ReportForm";
-import { Box, Typography, Paper, Container } from "@mui/material";
+import { Typography, Paper, Container } from "@mui/material";
 
 export default function ReportPage() {
   const searchParams = useSearchParams();
@@ -12,7 +12,14 @@ export default function ReportPage() {
   const room = searchParams.get("room") || "";
 
   return (
-    <Container maxWidth="sm" sx={{ mt: { xs: 4, md: 8 }, px: 2 }}>
+      <Container
+        maxWidth={false}
+        sx={{
+          maxWidth: { xs: "100%", md: 600 },
+          mt: { xs: 4, md: 8 },
+          px: { xs: 2, md: 4 },
+        }}
+      >
       <Paper
         elevation={3}
         sx={{

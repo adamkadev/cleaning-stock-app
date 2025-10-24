@@ -80,7 +80,7 @@ export default function ReportForm({ building, floor, room }: ReportFormProps) {
         Nouveau signalement
       </Typography>
 
-      <TextField label="Immeuble" value={building} disabled fullWidth />
+      <TextField label="Bâtiment" value={building} disabled fullWidth />
       <TextField label="Étage" value={floor} disabled fullWidth />
       <TextField label="Pièce" value={room} disabled fullWidth />
 

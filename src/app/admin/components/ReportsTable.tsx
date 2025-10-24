@@ -13,6 +13,7 @@ import {
   Box,
   TextField,
   Button,
+  MenuItem,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import StatusBadge from "./StatusBadge";
@@ -20,33 +21,33 @@ import { CSVLink } from "react-csv";
 
 export default function ReportsTable() {
   const [reports, setReports] = useState<Report[]>([]);
-  const [search, setSearch] = useState("");
   const [page, setPage] = useState(0);
   const rowsPerPage = 10;
+
   const theme = useTheme();
   const isDarkMode = theme.palette.mode === "dark";
+
+  const [filterBuilding, setFilterBuilding] = useState("");
+  const [filterStatus, setFilterStatus] = useState("");
 
   useEffect(() => {
     const unsubscribe = subscribeReports(setReports);
     return () => unsubscribe();
   }, []);
 
-  // Cycle status on badge click
   const handleBadgeClick = (r: Report) => {
     const currentIndex = STATUS.indexOf(r.status);
     const nextStatus = STATUS[(currentIndex + 1) % STATUS.length];
     updateReportStatus(r.id!, nextStatus);
   };
 
-  // Filter reports based on search input
-  const filteredReports = reports.filter(
-    (r) =>
-      r.building.toLowerCase().includes(search.toLowerCase()) ||
-      r.floor.toLowerCase().includes(search.toLowerCase()) ||
-      r.room.toLowerCase().includes(search.toLowerCase())
-  );
+  const filteredReports = reports.filter((r) => {
+    return (
+      (filterBuilding === "" || r.building.toLowerCase().includes(filterBuilding.toLowerCase())) &&
+      (filterStatus === "" || r.status === filterStatus)
+    );
+  });
 
-  // Paginate filtered reports
   const paginatedReports = filteredReports.slice(
     page * rowsPerPage,
     (page + 1) * rowsPerPage
@@ -64,71 +65,99 @@ export default function ReportsTable() {
   };
 
   return (
-    <Box className="p-4">
+    <Box sx={{ p: 4 }}>
       {/* CSV Export */}
-      <CSVLink
-        data={reports}
-        filename="reports.csv"
-        className={`mb-4 inline-block px-4 py-2 rounded border transition ${
-          isDarkMode
-            ? "border-white bg-white text-black hover:bg-gray-200"
-            : "border-black bg-black text-white hover:bg-gray-700"
-        }`}
-      >
-        Export CSV
-      </CSVLink>
+      <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 4 }}>
+        <CSVLink
+          data={reports}
+          filename="reports.csv"
+          className="inline-block px-4 py-2 rounded border transition"
+          style={{
+            backgroundColor: "transparent",
+            color: "inherit",
+            border: "1px solid currentColor",
+          }}
+        >
+          Exporter le CSV
+        </CSVLink>
+      </Box>
 
-      {/* Search */}
-      <Box className="mb-6">
+      {/* Filters */}
+      <Box className="flex flex-wrap gap-4 mb-6">
         <TextField
-          label="Rechercher par immeuble, étage ou pièce"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          fullWidth
+          label="Bâtiment"
+          value={filterBuilding}
+          onChange={(e) => setFilterBuilding(e.target.value)}
+          size="small"
         />
+        <TextField
+          label="État"
+          value={filterStatus}
+          onChange={(e) => setFilterStatus(e.target.value)}
+          size="small"
+          select
+          slotProps={{
+            inputLabel: { shrink: true },
+            select: { native: false },
+          }}
+        >
+          <MenuItem value="">Tous</MenuItem>
+          {STATUS.map((s) => (
+            <MenuItem key={s} value={s}>
+              {s}
+            </MenuItem>
+          ))}
+        </TextField>
       </Box>
 
       {/* Reports Table */}
-      <Box className={`overflow-x-auto rounded-lg border border-gray-200 shadow ${isDarkMode ? "border-gray-700" : ""}`}>
-        <Table className="min-w-full">
+      <Box
+        sx={{
+          overflowX: "auto",
+          border: "1px solid",
+          borderColor: isDarkMode ? "grey.700" : "grey.200",
+          borderRadius: 2,
+          boxShadow: 1,
+        }}
+      >
+        <Table sx={{ minWidth: 900 }}>
           <TableHead>
-            <TableRow className={`${isDarkMode ? "bg-gray-800" : "bg-gray-100"}`}>
-              <TableCell className={`font-bold ${isDarkMode ? "text-white" : "text-gray-700"}`}>Immeuble</TableCell>
-              <TableCell className={`font-bold ${isDarkMode ? "text-white" : "text-gray-700"}`}>Étage</TableCell>
-              <TableCell className={`font-bold ${isDarkMode ? "text-white" : "text-gray-700"}`}>Pièce</TableCell>
-              <TableCell className={`font-bold ${isDarkMode ? "text-white" : "text-gray-700"}`}>Produits</TableCell>
-              <TableCell className={`font-bold ${isDarkMode ? "text-white" : "text-gray-700"}`}>Commentaire</TableCell>
-              <TableCell className={`font-bold ${isDarkMode ? "text-white" : "text-gray-700"}`}>État</TableCell>
-              <TableCell className={`font-bold ${isDarkMode ? "text-white" : "text-gray-700"}`}>Date</TableCell>
+            <TableRow sx={{ backgroundColor: isDarkMode ? "grey.800" : "grey.100" }}>
+              <TableCell sx={{ fontWeight: "bold", width: 200 }}>Bâtiment</TableCell>
+              <TableCell sx={{ fontWeight: "bold", width: 80 }}>Étage</TableCell>
+              <TableCell sx={{ fontWeight: "bold", width: 100 }}>Pièce</TableCell>
+              <TableCell sx={{ fontWeight: "bold", width: 250 }}>Produits</TableCell>
+              <TableCell sx={{ fontWeight: "bold", width: 200 }}>Commentaire</TableCell>
+              <TableCell sx={{ fontWeight: "bold", width: 130 }}>État</TableCell>
+              <TableCell sx={{ fontWeight: "bold", width: 160 }}>Date</TableCell>
             </TableRow>
           </TableHead>
+
           <TableBody>
             {paginatedReports.map((r, i) => (
               <TableRow
                 key={r.id}
-                className={`${
-                  i % 2 === 0
-                    ? isDarkMode
-                      ? "bg-gray-800"
-                      : "bg-white"
-                    : isDarkMode
-                    ? "bg-gray-700"
-                    : "bg-gray-50"
-                } hover:${isDarkMode ? "bg-gray-600" : "bg-gray-100"} transition`}
+                sx={{
+                  backgroundColor:
+                    i % 2 === 0 ? (isDarkMode ? "grey.800" : "white") : (isDarkMode ? "grey.700" : "grey.50"),
+                  "&:hover": {
+                    backgroundColor: isDarkMode ? "grey.600" : "grey.100",
+                  },
+                }}
               >
-                <TableCell className={`py-2 px-4 ${isDarkMode ? "text-white" : "text-black"}`}>{r.building}</TableCell>
-                <TableCell className={`py-2 px-4 ${isDarkMode ? "text-white" : "text-black"}`}>{r.floor}</TableCell>
-                <TableCell className={`py-2 px-4 ${isDarkMode ? "text-white" : "text-black"}`}>{r.room}</TableCell>
-                <TableCell className={`py-2 px-4 ${isDarkMode ? "text-white" : "text-black"}`}>{r.products.join(", ")}</TableCell>
-                <TableCell className={`py-2 px-4 ${isDarkMode ? "text-white" : "text-black"}`}>{r.comment}</TableCell>
-                <TableCell className="py-2 px-4">
-                  <StatusBadge
-                    status={r.status}
-                    onClick={() => handleBadgeClick(r)}
-                    className="cursor-pointer"
-                  />
+                <TableCell sx={{ whiteSpace: "nowrap", py: 1 }}>{r.building}</TableCell>
+                <TableCell sx={{ whiteSpace: "nowrap", py: 1 }}>{r.floor}</TableCell>
+                <TableCell sx={{ whiteSpace: "nowrap", py: 1 }}>{r.room}</TableCell>
+                <TableCell sx={{ py: 1, maxWidth: 250, overflow: "hidden", textOverflow: "ellipsis" }}>
+                  {r.products.join(", ")}
                 </TableCell>
-                <TableCell className={`py-2 px-4 ${isDarkMode ? "text-white" : "text-black"}`}>{formatDate(r.createdAt)}</TableCell>
+                <TableCell sx={{ py: 1, maxWidth: 200, overflow: "hidden", textOverflow: "ellipsis" }}>
+                  {r.comment}
+                </TableCell>
+                <TableCell sx={{ py: 1 }}>
+                  <StatusBadge status={r.status} onClick={() => handleBadgeClick(r)} style={{ whiteSpace: "nowrap" }} />
+                </TableCell>
+                <TableCell sx={{ py: 1 }}>{formatDate(r.createdAt)}</TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -136,7 +165,7 @@ export default function ReportsTable() {
       </Box>
 
       {/* Pagination Controls */}
-      <Box className="flex justify-between mt-4">
+      <Box sx={{ display: "flex", justifyContent: "space-between", mt: 4 }}>
         <Button disabled={page === 0} onClick={() => setPage(page - 1)}>
           Précédent
         </Button>

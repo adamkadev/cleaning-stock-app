@@ -9,7 +9,6 @@ export default function ReportPage() {
 
   const building = searchParams.get("building") || "";
   const floor = searchParams.get("floor") || "";
-  const room = searchParams.get("room") || "";
 
   return (
       <Container
@@ -33,7 +32,7 @@ export default function ReportPage() {
           Signalement de stock
         </Typography>
 
-        <ReportForm building={building} floor={floor} room={room} />
+        <ReportForm building={building} floor={floor} />
       </Paper>
     </Container>
   );

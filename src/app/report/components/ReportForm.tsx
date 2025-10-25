@@ -19,12 +19,10 @@ import {
 interface ReportFormProps {
   building: string;
   floor: string;
-  room: string;
 }
 
-export default function ReportForm({ building, floor, room }: ReportFormProps) {
+export default function ReportForm({ building, floor }: ReportFormProps) {
   const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
-  const [comment, setComment] = useState("");
   const [error, setError] = useState("");
   const toast = useToast();
 
@@ -44,9 +42,7 @@ export default function ReportForm({ building, floor, room }: ReportFormProps) {
       const report: Report = {
         building,
         floor,
-        room,
         products: selectedProducts,
-        comment,
         status: "Initial",
         createdAt: new Date(),
       };
@@ -54,7 +50,6 @@ export default function ReportForm({ building, floor, room }: ReportFormProps) {
       await addReport(report);
       toast.success("Signalement envoyé avec succès");
       setSelectedProducts([]);
-      setComment("");
       setError("");
     } catch {
       toast.error("Erreur lors de l'envoi du signalement");
@@ -82,7 +77,6 @@ export default function ReportForm({ building, floor, room }: ReportFormProps) {
 
       <TextField label="Bâtiment" value={building} disabled fullWidth />
       <TextField label="Étage" value={floor} disabled fullWidth />
-      <TextField label="Pièce" value={room} disabled fullWidth />
 
       <FormGroup>
         {PRODUCTS.map(p => (
@@ -99,15 +93,6 @@ export default function ReportForm({ building, floor, room }: ReportFormProps) {
         ))}
         {error && <FormHelperText error>{error}</FormHelperText>}
       </FormGroup>
-
-      <TextField
-        label="Commentaire (optionnel)"
-        value={comment}
-        onChange={e => setComment(e.target.value)}
-        multiline
-        rows={3}
-        fullWidth
-      />
 
       <Button
         variant="contained"

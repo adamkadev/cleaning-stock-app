@@ -125,8 +125,7 @@ export default function ReportsTable() {
             <TableRow sx={{ backgroundColor: isDarkMode ? "grey.800" : "grey.100" }}>
               <TableCell sx={{ fontWeight: "bold", width: 200 }}>Bâtiment</TableCell>
               <TableCell sx={{ fontWeight: "bold", width: 80 }}>Étage</TableCell>
-              <TableCell sx={{ fontWeight: "bold", width: 100 }}>Pièce</TableCell>
-              <TableCell sx={{ fontWeight: "bold", width: 250 }}>Produits</TableCell>
+              <TableCell sx={{ fontWeight: "bold", width: 250 }}>Consommables</TableCell>
               <TableCell sx={{ fontWeight: "bold", width: 130 }}>État</TableCell>
               <TableCell sx={{ fontWeight: "bold", width: 160 }}>Date</TableCell>
             </TableRow>
@@ -147,7 +146,7 @@ export default function ReportsTable() {
                 <TableCell sx={{ whiteSpace: "nowrap", py: 1 }}>{r.building}</TableCell>
                 <TableCell sx={{ whiteSpace: "nowrap", py: 1 }}>{r.floor}</TableCell>
                 <TableCell sx={{ py: 1, maxWidth: 250, overflow: "hidden", textOverflow: "ellipsis" }}>
-                  {r.products.join(", ")}
+                  {r.consumables.join(", ")}
                 </TableCell>
                 <TableCell sx={{ py: 1 }}>
                   <StatusBadge

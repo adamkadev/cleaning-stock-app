@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Report } from "@/core/models/report";
-import { PRODUCTS } from "@/core/utils/constants";
+import { CONSUMABLES } from "@/core/utils/constants";
 import { addReport } from "@/core/services/reportService";
 import { useToast } from "@/shared/hooks/useToast";
 import {
@@ -22,19 +22,19 @@ interface ReportFormProps {
 }
 
 export default function ReportForm({ building, floor }: ReportFormProps) {
-  const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
+  const [selectedConsumables, setselectedConsumables] = useState<string[]>([]);
   const [error, setError] = useState("");
   const toast = useToast();
 
-  const toggleProduct = (product: string) => {
-    setSelectedProducts(prev =>
-      prev.includes(product) ? prev.filter(p => p !== product) : [...prev, product]
+  const toggleConsumable = (consumable: string) => {
+    setselectedConsumables(prev =>
+      prev.includes(consumable) ? prev.filter(p => p !== consumable) : [...prev, consumable]
     );
   };
 
   const handleSubmit = async () => {
-    if (selectedProducts.length === 0) {
-      setError("Veuillez sélectionner au moins un produit");
+    if (selectedConsumables.length === 0) {
+      setError("Veuillez sélectionner au moins un consommable.");
       return;
     }
 
@@ -42,14 +42,14 @@ export default function ReportForm({ building, floor }: ReportFormProps) {
       const report: Report = {
         building,
         floor,
-        products: selectedProducts,
+        consumables: selectedConsumables,
         status: "Initial",
         createdAt: new Date(),
       };
 
       await addReport(report);
       toast.success("Signalement envoyé avec succès");
-      setSelectedProducts([]);
+      setselectedConsumables([]);
       setError("");
     } catch {
       toast.error("Erreur lors de l'envoi du signalement");
@@ -79,13 +79,13 @@ export default function ReportForm({ building, floor }: ReportFormProps) {
       <TextField label="Étage" value={floor} disabled fullWidth />
 
       <FormGroup>
-        {PRODUCTS.map(p => (
+        {CONSUMABLES.map(p => (
           <FormControlLabel
             key={p}
             control={
               <Checkbox
-                checked={selectedProducts.includes(p)}
-                onChange={() => toggleProduct(p)}
+                checked={selectedConsumables.includes(p)}
+                onChange={() => toggleConsumable(p)}
               />
             }
             label={p}
@@ -98,7 +98,7 @@ export default function ReportForm({ building, floor }: ReportFormProps) {
         variant="contained"
         onClick={handleSubmit}
         sx={{ mt: 1 }}
-        disabled={selectedProducts.length === 0}
+        disabled={selectedConsumables.length === 0}
       >
         Envoyer
       </Button>

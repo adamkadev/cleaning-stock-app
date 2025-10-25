@@ -7,6 +7,20 @@ const reportsCollection = collection(db, "reports");
 // Add a new report
 export const addReport = async (report: Report) => {
   await addDoc(reportsCollection, { ...report, createdAt: new Date() });
+
+  try {
+    await fetch("/api/send-email", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        building: report.building,
+        floor: report.floor,
+        consumables: report.consumables,
+      }),
+    });
+  } catch (err) {
+    console.error("Erreur envoi mail :", err);
+  }
 };
 
 // Listen to all reports in real-time

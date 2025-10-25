@@ -32,7 +32,7 @@ export default function ReportPage() {
           Signalement de stock
         </Typography>
 
-        <ReportForm building={building} floor={floor} />
+        <ReportForm building={building} floor={Number(floor)} />
       </Paper>
     </Container>
   );
